@@ -8,7 +8,7 @@ namespace SFFAPI.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public Category Category { get; set; }
-        // public List<TriviaModel> Trivia { get; set; }
+        public int Quantity { get; set; }
     }
 
     public enum Category

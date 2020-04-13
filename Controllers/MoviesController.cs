@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SFFAPI.Context;
 using SFFAPI.Models;
 
 namespace SFFAPI.Controllers
@@ -13,9 +14,9 @@ namespace SFFAPI.Controllers
     [Route("api/[controller]")]
     public class MoviesController : ControllerBase
     {
-        private readonly MovieContext _context;
+        private readonly MyDbContext _context;
 
-        public MoviesController(MovieContext context)
+        public MoviesController(MyDbContext context)
         {
             _context = context;
         }
@@ -24,13 +25,13 @@ namespace SFFAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieModel>>> GetMovies()
         {
-            return await _context.MovieItems.ToListAsync();
+            return await _context.Movies.ToListAsync();
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MovieModel>> GetMovie(int id)
         {
-            var movie = await _context.MovieItems.FindAsync(id);
+            var movie = await _context.Movies.FindAsync(id);
 
             if (movie == null)
             {
@@ -43,7 +44,7 @@ namespace SFFAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<MovieModel>> PostMovie(MovieModel movie)
         {
-            _context.MovieItems.Add(movie);
+            _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMovies", new { id = movie.Id }, movie);
