@@ -7,13 +7,28 @@ namespace SFFAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Movies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: false),
+                    Category = table.Column<int>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Movies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MovieStudios",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true),
-                    Location = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: false),
+                    Location = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -21,21 +36,25 @@ namespace SFFAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Movies",
+                name: "LoanedMovies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    LoanedMovieId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true),
-                    Category = table.Column<int>(nullable: false),
-                    Quantity = table.Column<int>(nullable: false),
+                    MovieId = table.Column<int>(nullable: false),
                     MovieStudioModelId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Movies", x => x.Id);
+                    table.PrimaryKey("PK_LoanedMovies", x => x.LoanedMovieId);
                     table.ForeignKey(
-                        name: "FK_Movies_MovieStudios_MovieStudioModelId",
+                        name: "FK_LoanedMovies_Movies_MovieId",
+                        column: x => x.MovieId,
+                        principalTable: "Movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LoanedMovies_MovieStudios_MovieStudioModelId",
                         column: x => x.MovieStudioModelId,
                         principalTable: "MovieStudios",
                         principalColumn: "Id",
@@ -50,8 +69,8 @@ namespace SFFAPI.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     TriviaContent = table.Column<string>(nullable: true),
                     Grade = table.Column<int>(nullable: false),
-                    MovieId = table.Column<int>(nullable: true),
-                    StudioId = table.Column<int>(nullable: true)
+                    MovieId = table.Column<int>(nullable: false),
+                    StudioId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,18 +80,23 @@ namespace SFFAPI.Migrations
                         column: x => x.MovieId,
                         principalTable: "Movies",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Trivias_MovieStudios_StudioId",
                         column: x => x.StudioId,
                         principalTable: "MovieStudios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Movies_MovieStudioModelId",
-                table: "Movies",
+                name: "IX_LoanedMovies_MovieId",
+                table: "LoanedMovies",
+                column: "MovieId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoanedMovies_MovieStudioModelId",
+                table: "LoanedMovies",
                 column: "MovieStudioModelId");
 
             migrationBuilder.CreateIndex(
@@ -88,6 +112,9 @@ namespace SFFAPI.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "LoanedMovies");
+
             migrationBuilder.DropTable(
                 name: "Trivias");
 

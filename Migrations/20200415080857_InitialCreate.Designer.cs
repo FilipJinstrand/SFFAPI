@@ -9,7 +9,7 @@ using SFFAPI.Context;
 namespace SFFAPI.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20200413114657_InitialCreate")]
+    [Migration("20200415080857_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,6 +17,27 @@ namespace SFFAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3");
+
+            modelBuilder.Entity("SFFAPI.Models.LoanedMovie", b =>
+                {
+                    b.Property<int>("LoanedMovieId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("MovieStudioModelId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("LoanedMovieId");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("MovieStudioModelId");
+
+                    b.ToTable("LoanedMovies");
+                });
 
             modelBuilder.Entity("SFFAPI.Models.MovieModel", b =>
                 {
@@ -27,18 +48,14 @@ namespace SFFAPI.Migrations
                     b.Property<int>("Category")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MovieStudioModelId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MovieStudioModelId");
 
                     b.ToTable("Movies");
                 });
@@ -50,9 +67,11 @@ namespace SFFAPI.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Location")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -69,10 +88,10 @@ namespace SFFAPI.Migrations
                     b.Property<int>("Grade")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MovieId")
+                    b.Property<int>("MovieId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("StudioId")
+                    b.Property<int>("StudioId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("TriviaContent")
@@ -87,8 +106,14 @@ namespace SFFAPI.Migrations
                     b.ToTable("Trivias");
                 });
 
-            modelBuilder.Entity("SFFAPI.Models.MovieModel", b =>
+            modelBuilder.Entity("SFFAPI.Models.LoanedMovie", b =>
                 {
+                    b.HasOne("SFFAPI.Models.MovieModel", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SFFAPI.Models.MovieStudioModel", null)
                         .WithMany("LoanedMovies")
                         .HasForeignKey("MovieStudioModelId");
@@ -97,12 +122,16 @@ namespace SFFAPI.Migrations
             modelBuilder.Entity("SFFAPI.Models.TriviaModel", b =>
                 {
                     b.HasOne("SFFAPI.Models.MovieModel", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId");
+                        .WithMany("Trivias")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SFFAPI.Models.MovieStudioModel", "Studio")
                         .WithMany()
-                        .HasForeignKey("StudioId");
+                        .HasForeignKey("StudioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

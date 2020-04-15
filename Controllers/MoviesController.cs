@@ -49,5 +49,40 @@ namespace SFFAPI.Controllers
 
             return CreatedAtAction("GetMovies", new { id = movie.Id }, movie);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMovie(int id, MovieModel movie)
+        {
+            if (id != movie.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(movie).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MovieExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+
+            }
+
+            return NoContent();
+        }
+
+        private bool MovieExists(int id)
+        {
+            return _context.Movies.Any(m => m.Id == id);
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace SFFAPI.Models
@@ -8,12 +9,19 @@ namespace SFFAPI.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Location { get; set; }
-        public List<MovieModel> LoanedMovies { get; set; } = new List<MovieModel>();
+        public ICollection<LoanedMovie> LoanedMovies { get; set; } = new List<LoanedMovie>();
 
         public void AddMovie(MovieModel movie)
         {
-            LoanedMovies.Add(movie);
+            movie.Quantity--;
+            LoanedMovie loaned = new LoanedMovie() { Movie = movie };
+            LoanedMovies.Add(loaned);
         }
 
+        public void ReturnMovie(int id)
+        {
+            // var movieId = LoanedMovies.Select(m => m.MovieId).Where(m => m.);
+            // LoanedMovies.Remove();
+        }
     }
 }
