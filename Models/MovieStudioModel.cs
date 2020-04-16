@@ -20,8 +20,11 @@ namespace SFFAPI.Models
 
         public void ReturnMovie(int id)
         {
-            // var movieId = LoanedMovies.Select(m => m.MovieId).Where(m => m.);
-            // LoanedMovies.Remove();
+            var loanedMovie = LoanedMovies.Where(m => m.MovieId == id).FirstOrDefault();
+            var movie = LoanedMovies.Select(m => m.Movie).Where(m => m.Id == id).FirstOrDefault();
+
+            LoanedMovies.Remove(loanedMovie);
+            movie.Quantity++;
         }
     }
 }
