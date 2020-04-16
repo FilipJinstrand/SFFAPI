@@ -39,8 +39,6 @@ namespace SFFAPI.Controllers
                 return NotFound();
             }
 
-            //test
-
             return movieStudioModel;
         }
 
@@ -116,6 +114,18 @@ namespace SFFAPI.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMovieStudioModel", new { id = movieStudioModel.Id }, movieStudioModel);
+        }
+
+        [HttpPost("{studioId}/{movieId}")]
+        public async Task<ActionResult<MovieModel>> PostMovieToStudio(int studioId, int movieId)
+        {
+            var movieStudio = await _context.MovieStudios.Where(m => m.Id == studioId).FirstOrDefaultAsync();
+
+            var movie = await _context.Movies.Where(m => m.Id == movieId).FirstOrDefaultAsync();
+
+            movieStudio.AddMovie(movie);
+
+            return StatusCode(201);
         }
 
         // DELETE: api/MovieStudios/5
