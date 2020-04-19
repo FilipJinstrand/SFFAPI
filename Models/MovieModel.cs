@@ -29,7 +29,7 @@ namespace SFFAPI.Models
             foreach (var t in Trivias)
             {
                 trivias.Add(t.TriviaContent);
-            };
+            }
             return trivias;
         }
     }

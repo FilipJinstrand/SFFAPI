@@ -13,9 +13,14 @@ namespace SFFAPI.Models
 
         public void AddMovie(MovieModel movie)
         {
-            movie.Quantity--;
-            LoanedMovie loaned = new LoanedMovie() { Movie = movie };
-            LoanedMovies.Add(loaned);
+            if (movie.Quantity > 0)
+            {
+                movie.Quantity--;
+
+                LoanedMovie loaned = new LoanedMovie() { Movie = movie };
+                LoanedMovies.Add(loaned);
+            }
+
         }
 
         public void ReturnMovie(int id)
@@ -23,8 +28,11 @@ namespace SFFAPI.Models
             var loanedMovie = LoanedMovies.Where(m => m.MovieId == id).FirstOrDefault();
             var movie = LoanedMovies.Select(m => m.Movie).Where(m => m.Id == id).FirstOrDefault();
 
-            LoanedMovies.Remove(loanedMovie);
-            movie.Quantity++;
+            if (loanedMovie != null)
+            {
+                LoanedMovies.Remove(loanedMovie);
+                movie.Quantity++;
+            }
         }
     }
 }

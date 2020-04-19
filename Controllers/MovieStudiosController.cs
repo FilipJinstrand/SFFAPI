@@ -116,16 +116,36 @@ namespace SFFAPI.Controllers
             return CreatedAtAction("GetMovieStudioModel", new { id = movieStudioModel.Id }, movieStudioModel);
         }
 
-        [HttpPost("{studioId}/{movieId}")]
-        public async Task<ActionResult<MovieModel>> PostMovieToStudio(int studioId, int movieId)
+        // Post a new movie to the movie studio, or remove 1 = Add movie 0 = Remove
+        [HttpPost("{studioId}/{movieId}/{boolNum}")]
+        public async Task<ActionResult<MovieModel>> PostMovieToStudio(int studioId, int movieId, int boolNum)
         {
-            var movieStudio = await _context.MovieStudios.Where(m => m.Id == studioId).FirstOrDefaultAsync();
 
-            var movie = await _context.Movies.Where(m => m.Id == movieId).FirstOrDefaultAsync();
+            if (boolNum == 1)
+            {
+                var movieStudio = await _context.MovieStudios.Where(m => m.Id == studioId).FirstOrDefaultAsync();
 
-            movieStudio.AddMovie(movie);
+                var movie = await _context.Movies.Where(m => m.Id == movieId).FirstOrDefaultAsync();
 
-            return StatusCode(201);
+                movieStudio.AddMovie(movie);
+
+                await _context.SaveChangesAsync();
+
+                return StatusCode(201);
+            }
+            else if (boolNum == 0)
+            {
+                var movieStudio = await _context.MovieStudios.Where(m => m.Id == studioId).FirstOrDefaultAsync();
+
+                movieStudio.ReturnMovie(movieId);
+
+                await _context.SaveChangesAsync();
+
+                return StatusCode(201);
+            }
+
+            return StatusCode(400);
+
         }
 
         // DELETE: api/MovieStudios/5
