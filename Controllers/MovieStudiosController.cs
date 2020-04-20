@@ -116,15 +116,14 @@ namespace SFFAPI.Controllers
             return CreatedAtAction("GetMovieStudioModel", new { id = movieStudioModel.Id }, movieStudioModel);
         }
 
-        // Post a new movie to the movie studio, or remove 1 = Add movie 0 = Remove
-        [HttpPost("{studioId}/{movieId}/{boolNum}")]
-        public async Task<ActionResult<MovieModel>> PostMovieToStudio(int studioId, int movieId, int boolNum)
+        // Post a new movie to the movie studio
+        [HttpPost("AddMovie/{studioId}/{movieId}")]
+        public async Task<ActionResult<MovieModel>> PostMovieToStudio(int studioId, int movieId)
         {
+            var movieStudio = await _context.MovieStudios.Where(m => m.Id == studioId).FirstOrDefaultAsync();
 
-            if (boolNum == 1)
+            if (movieStudio != null)
             {
-                var movieStudio = await _context.MovieStudios.Where(m => m.Id == studioId).FirstOrDefaultAsync();
-
                 var movie = await _context.Movies.Where(m => m.Id == movieId).FirstOrDefaultAsync();
 
                 movieStudio.AddMovie(movie);
@@ -133,22 +132,30 @@ namespace SFFAPI.Controllers
 
                 return StatusCode(201);
             }
-            else if (boolNum == 0)
-            {
-                var movieStudioModel = await _context.MovieStudios.Where(m => m.Id == studioId)
-                                                              .Include(a => a.LoanedMovies)
-                                                              .ThenInclude(a => a.Movie)
-                                                              .FirstOrDefaultAsync();
-
-                movieStudioModel.ReturnMovie(movieId);
-
-                await _context.SaveChangesAsync();
-
-                return StatusCode(201);
-            }
-
             return StatusCode(400);
 
+        }
+
+        // Remove movie from studio
+        [HttpDelete("RemoveMovie/{studioId}/{movieId}")]
+        public async Task<ActionResult<MovieModel>> RemoveMovieFromStudio(int studioId, int movieId)
+        {
+            var movieStudioModel = await _context.MovieStudios.Where(m => m.Id == studioId)
+                                                             .Include(a => a.LoanedMovies)
+                                                             .ThenInclude(a => a.Movie)
+                                                             .FirstOrDefaultAsync();
+
+            if (movieStudioModel == null)
+            {
+                return NotFound();
+            }
+
+            var lonedMovie = movieStudioModel.ReturnMovie(movieId);
+
+            _context.LoanedMovies.Remove(lonedMovie);
+            await _context.SaveChangesAsync();
+
+            return StatusCode(201);
         }
 
         // DELETE: api/MovieStudios/5

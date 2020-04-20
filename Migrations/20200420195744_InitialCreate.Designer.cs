@@ -9,7 +9,7 @@ using SFFAPI.Context;
 namespace SFFAPI.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20200420124601_InitialCreate")]
+    [Migration("20200420195744_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -88,10 +88,7 @@ namespace SFFAPI.Migrations
                     b.Property<int>("Grade")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MoveStudioId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MovieId")
+                    b.Property<int?>("MovieId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("MovieStudioId")
@@ -126,9 +123,7 @@ namespace SFFAPI.Migrations
                 {
                     b.HasOne("SFFAPI.Models.MovieModel", "Movie")
                         .WithMany("Trivias")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MovieId");
 
                     b.HasOne("SFFAPI.Models.MovieStudioModel", "MovieStudio")
                         .WithMany()

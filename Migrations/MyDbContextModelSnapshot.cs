@@ -86,10 +86,7 @@ namespace SFFAPI.Migrations
                     b.Property<int>("Grade")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MoveStudioId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MovieId")
+                    b.Property<int?>("MovieId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("MovieStudioId")
@@ -124,9 +121,7 @@ namespace SFFAPI.Migrations
                 {
                     b.HasOne("SFFAPI.Models.MovieModel", "Movie")
                         .WithMany("Trivias")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MovieId");
 
                     b.HasOne("SFFAPI.Models.MovieStudioModel", "MovieStudio")
                         .WithMany()

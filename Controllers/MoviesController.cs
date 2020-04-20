@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -50,14 +51,23 @@ namespace SFFAPI.Controllers
             return CreatedAtAction("GetMovies", new { id = movie.Id }, movie);
         }
 
+        // Post trivia with movie id and studio id
         [HttpPost("PostTrivia/{movieId}/{studioId}")]
         public async Task<ActionResult<TriviaModel>> PostMovieTrivia(int movieId, int studioId, TriviaModel trivia)
         {
             var movie = await _context.Movies.Where(m => m.Id == movieId).FirstOrDefaultAsync();
-            movie.AddTrivia(trivia, studioId);
-            await _context.SaveChangesAsync();
-
-            return StatusCode(201);
+            var movieStudio = await _context.MovieStudios.Where(m => m.Id == studioId).FirstOrDefaultAsync();
+            if (movie != null && movieStudio != null)
+            {
+                if (trivia.Grade > 5 || trivia.Grade < 0)
+                {
+                    return StatusCode(400);
+                }
+                movie.AddTrivia(trivia, movieStudio);
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            return StatusCode(400);
         }
 
         [HttpPut("{id}")]

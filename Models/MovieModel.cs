@@ -18,20 +18,10 @@ namespace SFFAPI.Models
         public int Quantity { get; set; }
         public ICollection<TriviaModel> Trivias { get; set; } = new List<TriviaModel>();
 
-        public void AddTrivia(TriviaModel trivia, int studioId)
+        public void AddTrivia(TriviaModel trivia, MovieStudioModel studio)
         {
-            trivia.MoveStudioId = studioId;
+            trivia.MovieStudio = studio;
             Trivias.Add(trivia);
-        }
-
-        public List<string> ShowTrivia()
-        {
-            var trivias = new List<string>();
-            foreach (var t in Trivias)
-            {
-                trivias.Add(t.TriviaContent);
-            }
-            return trivias;
         }
     }
 }

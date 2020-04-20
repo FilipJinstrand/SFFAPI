@@ -69,8 +69,7 @@ namespace SFFAPI.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     TriviaContent = table.Column<string>(nullable: true),
                     Grade = table.Column<int>(nullable: false),
-                    MovieId = table.Column<int>(nullable: false),
-                    MoveStudioId = table.Column<int>(nullable: false),
+                    MovieId = table.Column<int>(nullable: true),
                     MovieStudioId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -81,7 +80,7 @@ namespace SFFAPI.Migrations
                         column: x => x.MovieId,
                         principalTable: "Movies",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Trivias_MovieStudios_MovieStudioId",
                         column: x => x.MovieStudioId,

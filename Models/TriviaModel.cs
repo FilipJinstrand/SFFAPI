@@ -10,9 +10,7 @@ namespace SFFAPI.Models
         public string TriviaContent { get; set; }
         public int Grade { get; set; }
 
-        public int MovieId { get; set; }
         public MovieModel Movie { get; set; }
-        public int MoveStudioId { get; set; }
         public MovieStudioModel MovieStudio { get; set; }
     }
 }
