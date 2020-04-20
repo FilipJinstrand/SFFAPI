@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using SFFAPI.Context;
 
 namespace SFFAPI.Models
 {
@@ -20,7 +21,6 @@ namespace SFFAPI.Models
                 LoanedMovie loaned = new LoanedMovie() { Movie = movie };
                 LoanedMovies.Add(loaned);
             }
-
         }
 
         public void ReturnMovie(int id)

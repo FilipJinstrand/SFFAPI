@@ -135,9 +135,12 @@ namespace SFFAPI.Controllers
             }
             else if (boolNum == 0)
             {
-                var movieStudio = await _context.MovieStudios.Where(m => m.Id == studioId).FirstOrDefaultAsync();
+                var movieStudioModel = await _context.MovieStudios.Where(m => m.Id == studioId)
+                                                              .Include(a => a.LoanedMovies)
+                                                              .ThenInclude(a => a.Movie)
+                                                              .FirstOrDefaultAsync();
 
-                movieStudio.ReturnMovie(movieId);
+                movieStudioModel.ReturnMovie(movieId);
 
                 await _context.SaveChangesAsync();
 

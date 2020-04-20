@@ -74,9 +74,7 @@ namespace SFFAPI.Controllers
                 {
                     throw;
                 }
-
             }
-
             return NoContent();
         }
 
