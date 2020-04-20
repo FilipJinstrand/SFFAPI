@@ -18,8 +18,9 @@ namespace SFFAPI.Models
         public int Quantity { get; set; }
         public ICollection<TriviaModel> Trivias { get; set; } = new List<TriviaModel>();
 
-        public void AddTrivia(TriviaModel trivia)
+        public void AddTrivia(TriviaModel trivia, int studioId)
         {
+            trivia.MoveStudioId = studioId;
             Trivias.Add(trivia);
         }
 

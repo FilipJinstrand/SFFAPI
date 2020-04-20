@@ -86,10 +86,13 @@ namespace SFFAPI.Migrations
                     b.Property<int>("Grade")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("MoveStudioId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("MovieId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("StudioId")
+                    b.Property<int?>("MovieStudioId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("TriviaContent")
@@ -99,7 +102,7 @@ namespace SFFAPI.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.HasIndex("StudioId");
+                    b.HasIndex("MovieStudioId");
 
                     b.ToTable("Trivias");
                 });
@@ -125,11 +128,9 @@ namespace SFFAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SFFAPI.Models.MovieStudioModel", "Studio")
+                    b.HasOne("SFFAPI.Models.MovieStudioModel", "MovieStudio")
                         .WithMany()
-                        .HasForeignKey("StudioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MovieStudioId");
                 });
 #pragma warning restore 612, 618
         }

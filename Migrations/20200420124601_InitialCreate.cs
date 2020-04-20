@@ -70,7 +70,8 @@ namespace SFFAPI.Migrations
                     TriviaContent = table.Column<string>(nullable: true),
                     Grade = table.Column<int>(nullable: false),
                     MovieId = table.Column<int>(nullable: false),
-                    StudioId = table.Column<int>(nullable: false)
+                    MoveStudioId = table.Column<int>(nullable: false),
+                    MovieStudioId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -82,11 +83,11 @@ namespace SFFAPI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Trivias_MovieStudios_StudioId",
-                        column: x => x.StudioId,
+                        name: "FK_Trivias_MovieStudios_MovieStudioId",
+                        column: x => x.MovieStudioId,
                         principalTable: "MovieStudios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -105,9 +106,9 @@ namespace SFFAPI.Migrations
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Trivias_StudioId",
+                name: "IX_Trivias_MovieStudioId",
                 table: "Trivias",
-                column: "StudioId");
+                column: "MovieStudioId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -50,6 +50,16 @@ namespace SFFAPI.Controllers
             return CreatedAtAction("GetMovies", new { id = movie.Id }, movie);
         }
 
+        [HttpPost("PostTrivia/{movieId}/{studioId}")]
+        public async Task<ActionResult<TriviaModel>> PostMovieTrivia(int movieId, int studioId, TriviaModel trivia)
+        {
+            var movie = await _context.Movies.Where(m => m.Id == movieId).FirstOrDefaultAsync();
+            movie.AddTrivia(trivia, studioId);
+            await _context.SaveChangesAsync();
+
+            return StatusCode(201);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(int id, MovieModel movie)
         {
