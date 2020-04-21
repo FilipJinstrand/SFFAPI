@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using SFFAPI.Models;
 using SFFAPI.Context;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace SFFAPI
 {
@@ -28,6 +29,8 @@ namespace SFFAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc(options => options.OutputFormatters.Add(new XmlSerializerOutputFormatter()));
+
             services.AddDbContext<MyDbContext>(opt => opt.UseSqlite("Data Source=minDatabas.db"));
             services.AddControllers();
         }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +41,16 @@ namespace SFFAPI.Controllers
                 return NotFound();
             }
             return movie;
+        }
+
+        [HttpGet("Etikett/{movieId}/{studioId}")]
+        [Produces("application/xml")]
+        public async Task<Etikett> GetEttiket(int movieId, int studioId)
+        {
+            var etikett = new Etikett();
+            var etikettData = await etikett.CreateEtikett(_context, movieId, studioId);
+            var XML = etikett.EtikettData(etikettData);
+            return XML;
         }
 
         // Post: api/Movies
@@ -98,6 +110,22 @@ namespace SFFAPI.Controllers
             return NoContent();
         }
 
+        // Delete trivia
+        [HttpDelete("RemoveTrivia/{id}")]
+        public async Task<ActionResult<TriviaModel>> DeleteTrivia(int id)
+        {
+            var trivia = await _context.Trivias.Where(t => t.Id == id).FirstOrDefaultAsync();
+
+            if (trivia == null)
+            {
+                return NotFound();
+            }
+
+            _context.Trivias.Remove(trivia);
+            await _context.SaveChangesAsync();
+
+            return StatusCode(201);
+        }
         private bool MovieExists(int id)
         {
             return _context.Movies.Any(m => m.Id == id);
